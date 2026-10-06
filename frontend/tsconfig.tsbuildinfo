@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/api.ts","./src/format.ts","./src/main.tsx","./src/types.ts","./src/vite-env.d.ts","./src/pages/AdminConsole.tsx","./src/pages/EmployeeCourses.tsx","./src/pages/Login.tsx","./src/pages/adminViews.tsx"],"version":"5.9.3"}

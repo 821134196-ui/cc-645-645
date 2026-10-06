@@ -1,0 +1,107 @@
+// 企业培训录播授权系统数据模型
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Department {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  users     User[]
+  licenses  LicenseDepartment[]
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  account      String     @unique
+  password     String     @default("123456") // 本地演示用明文
+  role         String     @default("EMPLOYEE") // EMPLOYEE | ADMIN
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  accessLogs   AccessLog[]
+  createdAt    DateTime   @default(now())
+}
+
+model Course {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  versions    VideoVersion[]
+  createdAt   DateTime       @default(now())
+}
+
+model VideoVersion {
+  id            String     @id @default(cuid())
+  courseId      String
+  course        Course     @relation(fields: [courseId], references: [id])
+  versionLabel  String     // 例如 v1 / v2 / 2024修订版
+  // 本地相对 backend 目录的文件路径，跨部门用户永远拿不到真实路径
+  filePath      String
+  fileSize      Int        @default(0)
+  createdAt     DateTime   @default(now())
+  licenses      License[]
+  accessLogs    AccessLog[]
+  @@unique([courseId, versionLabel])
+}
+
+model License {
+  id                String      @id @default(cuid())
+  versionId         String
+  version           VideoVersion @relation(fields: [versionId], references: [id])
+  // 续签时旧许可 supersededById 指向新许可；每条许可不可直接改日期
+  supersededById    String?     @unique
+  supersededBy      License?    @relation("LicenseChain", fields: [supersededById], references: [id])
+  supersedes        License?    @relation("LicenseChain")
+  licenseFile       String      // 登记的许可文件（保存路径）
+  licenseFileName   String      // 原始文件名
+  validFrom         DateTime
+  validUntil        DateTime
+  status            String      @default("ACTIVE") // ACTIVE | TAKEN_DOWN；到期由日期判定
+  takeDownReason    String?
+  takenDownAt       DateTime?
+  createdAt         DateTime    @default(now())
+  departments       LicenseDepartment[]
+  accessLogs        AccessLog[]
+  @@index([versionId])
+  @@index([validUntil])
+}
+
+model LicenseDepartment {
+  licenseId    String
+  departmentId String
+  license      License    @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  department   Department @relation(fields: [departmentId], references: [id])
+  @@id([licenseId, departmentId])
+}
+
+model AccessLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  versionId   String
+  version     VideoVersion @relation(fields: [versionId], references: [id])
+  licenseId   String?  // 命中授权的许可；被拒绝时可能为空
+  license     License? @relation(fields: [licenseId], references: [id])
+  mode        String   // STREAM | DOWNLOAD
+  result      String   // ALLOWED | DENIED
+  reason      String?  // 拒绝原因：EXPIRED / TAKEN_DOWN / DEPARTMENT_MISMATCH / NO_LICENSE / BAD_SIGNATURE ...
+  ip          String?
+  createdAt   DateTime @default(now())
+  @@index([versionId, createdAt])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // RENEW_DUE
+  licenseId String
+  versionId String
+  message   String
+  sent      Boolean  @default(false) // 模拟发送：标记为已提醒
+  createdAt DateTime @default(now())
+}
