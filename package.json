@@ -1,0 +1,15 @@
+{
+  "name": "training-license-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "企业培训录播授权与到期下架系统",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "seed": "npm run seed --workspace backend",
+    "test:e2e": "npm run test:e2e --workspace backend"
+  }
+}

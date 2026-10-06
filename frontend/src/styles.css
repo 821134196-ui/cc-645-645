@@ -1,0 +1,277 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  background: #f2f4f8;
+  color: #1f2937;
+  font-size: 14px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 24px;
+  height: 56px;
+  background: #1e3a5f;
+  color: #fff;
+}
+.brand {
+  font-weight: 700;
+  font-size: 16px;
+}
+.topbar nav {
+  display: flex;
+  gap: 8px;
+}
+.navbtn,
+.tabs .tab {
+  background: transparent;
+  border: none;
+  color: #c8d6e8;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.navbtn.active,
+.tabs .tab.active {
+  background: #2f5680;
+  color: #fff;
+}
+.userpick {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.userpick select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+}
+.content {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 16px 40px;
+}
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(15, 40, 80, 0.08);
+}
+.panel h3 {
+  margin: 0 0 8px;
+}
+.employee-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hint {
+  color: #6b7280;
+  font-size: 12px;
+  margin: 2px 0;
+}
+.grid {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+.grid th,
+.grid td {
+  text-align: left;
+  padding: 9px 10px;
+  border-bottom: 1px solid #eef1f5;
+  vertical-align: top;
+}
+.grid th {
+  color: #4b5563;
+  font-weight: 600;
+  background: #f8fafc;
+}
+button {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+button:hover:not(:disabled) {
+  border-color: #2f5680;
+  color: #2f5680;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+button.primary {
+  background: #2f5680;
+  color: #fff;
+  border-color: #2f5680;
+}
+button.danger {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+button.danger:hover:not(:disabled) {
+  background: #dc2626;
+  color: #fff;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.badge.ok {
+  background: #e6f6ec;
+  color: #15803d;
+}
+.badge.warn {
+  background: #fef3e2;
+  color: #b45309;
+}
+.badge.bad {
+  background: #fdeaea;
+  color: #b91c1c;
+}
+.badge.muted {
+  background: #eef1f5;
+  color: #6b7280;
+}
+.ok {
+  color: #15803d;
+}
+.warn {
+  color: #b45309;
+}
+.bad {
+  color: #b91c1c;
+}
+.toast {
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.toast.ok {
+  background: #e6f6ec;
+}
+.toast.bad {
+  background: #fdeaea;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.tabs .tab {
+  background: #fff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+input,
+select,
+textarea {
+  padding: 7px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  width: 100%;
+  margin: 4px 0 10px;
+  font-family: inherit;
+}
+select {
+  width: auto;
+}
+.form-row {
+  display: flex;
+  gap: 14px;
+}
+.form-row > div {
+  flex: 1;
+}
+.dept-pick {
+  display: flex;
+  gap: 10px;
+  margin: 4px 0 10px;
+  flex-wrap: wrap;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #f1f5f9;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.chip input {
+  width: auto;
+  margin: 0;
+}
+.readonly {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 4px 0 10px;
+}
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 720px;
+  max-width: 94vw;
+  max-height: 88vh;
+  overflow: auto;
+  padding: 18px 22px;
+}
+.modal.wide {
+  width: 860px;
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.modal-body label {
+  font-weight: 600;
+  font-size: 13px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+.player {
+  width: 100%;
+  max-height: 70vh;
+  background: #000;
+  border-radius: 8px;
+}
+a {
+  color: #2f5680;
+}

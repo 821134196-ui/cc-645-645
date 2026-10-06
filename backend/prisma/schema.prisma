@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  users     User[]
+  licenses  LicenseDepartment[]
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  employeeNo   String     @unique
+  role         String     @default("EMPLOYEE") // EMPLOYEE | ADMIN
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  accessLogs   AccessLog[]
+  createdAt    DateTime   @default(now())
+}
+
+model Course {
+  id          String         @id @default(uuid())
+  title       String
+  description String?
+  versions    VideoVersion[]
+  createdAt   DateTime       @default(now())
+}
+
+model VideoVersion {
+  id           String      @id @default(uuid())
+  courseId     String
+  course       Course      @relation(fields: [courseId], references: [id])
+  versionLabel String
+  lecturer     String
+  fileName     String
+  filePath     String
+  durationSec  Int?
+  licenses     License[]
+  accessLogs   AccessLog[]
+  createdAt    DateTime    @default(now())
+
+  @@unique([courseId, versionLabel])
+}
+
+// 许可记录：每次登记/续签都新增一行，绝不修改旧记录的截止日期
+// status: ACTIVE（生效中）| SUPERSEDED（已被续签替代）| REVOKED（管理员下架）
+model License {
+  id              String      @id @default(uuid())
+  versionId       String
+  version         VideoVersion @relation(fields: [versionId], references: [id])
+  licenseFileName String
+  licenseFilePath String
+  validFrom       DateTime
+  validUntil      DateTime
+  status          String      @default("ACTIVE")
+  revokeReason    String?
+  note            String?
+  departments     LicenseDepartment[]
+  accessLogs      AccessLog[]
+  reminders       Reminder[]
+  createdAt       DateTime    @default(now())
+
+  @@index([versionId, status])
+  @@index([validUntil])
+}
+
+model LicenseDepartment {
+  licenseId    String
+  departmentId String
+  license      License    @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  @@id([licenseId, departmentId])
+}
+
+model AccessLog {
+  id        String       @id @default(uuid())
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id])
+  versionId String?
+  version   VideoVersion? @relation(fields: [versionId], references: [id])
+  licenseId String?
+  license   License?     @relation(fields: [licenseId], references: [id])
+  action    String // ISSUE_PLAY | ISSUE_DOWNLOAD | STREAM | DOWNLOAD
+  result    String // GRANTED | DENIED
+  reason    String?
+  ip        String?
+  createdAt DateTime     @default(now())
+
+  @@index([versionId])
+  @@index([createdAt])
+}
+
+model Reminder {
+  id        String   @id @default(uuid())
+  licenseId String
+  license   License  @relation(fields: [licenseId], references: [id])
+  channel   String   @default("MOCK_EMAIL")
+  content   String
+  sentAt    DateTime @default(now())
+
+  @@unique([licenseId, sentAt])
+  @@index([sentAt])
+}
